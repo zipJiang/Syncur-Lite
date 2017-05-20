@@ -35,7 +35,9 @@ public class MySurfaceView extends View {
     private static final int MAX_CLICK_DURATION = 200;
     private long startClickTime = 0;
     private boolean secondTouch = false;
-
+    private boolean scoll = false;
+    private float startX = 0;
+    private float startY = 0;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -58,9 +60,15 @@ public class MySurfaceView extends View {
                 mVelocityTracker.addMovement(event);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
+                startX = event.getX();
+                startY = event.getY();
                 secondTouch = true;
                 break;
             case MotionEvent.ACTION_MOVE:
+                if(secondTouch == true ) {
+                    scoll = true;
+                    break;
+                }
                 mVelocityTracker.addMovement(event);
                 // When you want to determine the velocity, call
                 // computeCurrentVelocity(). Then call getXVelocity()
@@ -90,7 +98,19 @@ public class MySurfaceView extends View {
                 secondTouch = false;
                 /* Generate a right click */
                 long semiDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                if(semiDuration < MAX_CLICK_DURATION){
+                if( scoll == true ){
+                    float DistanceX = event.getX() - startX;
+                    float DistanceY = event.getY() - startY;
+                    try{
+                        dStream.writeBytes("SCOLL:" + String.valueOf(DistanceX) + " " + String.valueOf(DistanceY) + "\n");
+                        scoll = false;
+                        startX = 0; startY = 0;
+                    }
+                    catch(IOException e){
+                        System.out.println("write to dStream failed.");
+                    }
+                }
+                else if(semiDuration < MAX_CLICK_DURATION){
                     try {
                         dStream.writeBytes("RIGHT:" + semiDuration + "\n");
                     }
@@ -101,7 +121,19 @@ public class MySurfaceView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                if(clickDuration < MAX_CLICK_DURATION && !secondTouch) {
+                if( scoll == true ){
+                    float DistanceX = event.getX() - startX;
+                    float DistanceY = event.getY() - startY;
+                    try{
+                        dStream.writeBytes("SCOLL:" + String.valueOf(DistanceX) + " " + String.valueOf(DistanceY) + "\n");
+                        scoll = false;
+                        startX = 0; startY = 0;
+                    }
+                    catch(IOException e){
+                        System.out.println("write to dStream failed.");
+                    }
+                }
+                else if(clickDuration < MAX_CLICK_DURATION && !secondTouch) {
                     //click event has occurred
                     try {
                         dStream.writeBytes("CLICK:" + clickDuration + "\n");
