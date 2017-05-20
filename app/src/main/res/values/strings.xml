@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Syncur Lite</string>
+    <string name="author">Tony</string>
+    <string name="version_name">1.0</string>
+    <string name="report_body">
+        <![CDATA[
+        <html>
+        <body>
+        <h1>TPS Report for: {{reportDate}}</h1>
+        <p>Here are the contents of the TPS report:</p>
+        <p>{{message}}</p>
+        <p>If you have any questions regarding this report, please
+        do <b>not</b> ask Mark Murphy.</p>
+        </body>
+        </html>
+        ]]>
+    </string>
+    <string name="cherry">
+        Loveliest of trees, the cherry now
+        Is hung with bloom along the bough,
+        And stands about the woodland ride
+        Wearing white for Eastertide.
+    </string>
+    <string name="housman">Good bye to barns and stacks and trees.</string>
+    <string name="button">SHOW AUTHOR</string>
+    <string name="title_activity_list">List Activity</string>
+    <string name="title_activity_sensor">SensorActivity</string>
+
+    <string name="title_activity_touch_screen">TouchScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="guidance">Please Enter Your Destination IP Here:</string>
+</resources>
