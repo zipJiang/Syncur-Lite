@@ -25,39 +25,6 @@ public class TouchScreenActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra(Main.EXTRA_MESSAGE);
         /* End message extraction */
-
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        /* Seems that we dont have to use Connectivity Manager */
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        /* Check whether wifi is connected */
-        //boolean isWifiConn = (networkInfo != null &&
-        //       networkInfo.isConnected() && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI));
-        boolean isWifiConn = networkInfo.isConnected();
-        if(isWifiConn) {
-            /* Proceed to next Stage */
-            /* Send data to the specified ip address */
-            /* Hard-coded once, should be optimized. */
-            networkThread nt = new networkThread(port, message);
-            nt.start();
-            try{
-                nt.join();
-            }
-            catch(InterruptedException e) {
-                System.out.println("Interrupted.");
-            }
-            dStream = nt.dos;
-            try{
-                dStream.writeBytes("TouchScreen\n");
-            }
-            catch(IOException e) {
-                System.out.println("Failed to write to dStream.");
-            }
-        }
-        else {
-            /* these naiive place holder should be changed to log recorder */
-            System.out.println("No wifi connection detected.");
-        }
         MySurfaceView mysurfaceView = (MySurfaceView)findViewById(R.id.touchScreen);
         mysurfaceView.setOutputStream(dStream);
         mysurfaceView.setPort(port);
