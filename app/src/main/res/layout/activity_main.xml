@@ -33,15 +33,22 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/sensorMode"
                 android:layout_weight="33"
+                android:background="@drawable/ripple_bg"
                 android:onClick="toSensorMode"
         />
+
         <Button
                 android:text="Touchscreen Mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/touchMode"
                 android:layout_weight="33"
+                android:background="@drawable/ripple_bg"
                 android:onClick="toTouchMode"
         />
     </LinearLayout>
+    <ImageView
+             android:id="@+id/iv_canvas"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent" />
 </RelativeLayout>

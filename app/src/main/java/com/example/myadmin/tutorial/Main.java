@@ -6,6 +6,7 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.EditText;
 
+
 public class Main extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.myadmin.Main.MESSAGE";
@@ -23,7 +24,6 @@ public class Main extends AppCompatActivity {
     }
 
     public void toTouchMode(View view) {
-
         Intent intent = new Intent(this, TouchScreenActivity.class);
         EditText editText = (EditText)findViewById(R.id.ip);
         String message = editText.getText().toString();
