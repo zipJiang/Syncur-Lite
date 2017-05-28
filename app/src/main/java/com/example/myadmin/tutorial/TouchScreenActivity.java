@@ -1,5 +1,6 @@
 package com.example.myadmin.tutorial;
 
+import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
@@ -77,6 +78,8 @@ public class TouchScreenActivity extends AppCompatActivity {
         MySurfaceView mysurfaceView = (MySurfaceView)findViewById(R.id.touchScreen);
         mysurfaceView.setOutputStream(dStream);
         mysurfaceView.setPort(port);
+
+
     }
 
     /* Here start my own code */

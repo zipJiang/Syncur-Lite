@@ -111,7 +111,7 @@ public class MySurfaceView extends View {
     //private  ImageView iv_canvas = (ImageView) findViewById(R.id.iv_canvas);
 
     private float mInitialRadius = 0;   // 初始波纹半径
-    private float mMaxRadius = 40;     // 最大波纹半径
+    private float mMaxRadius = 50;     // 最大波纹半径
     private long mDuration = 500;      // 一个波纹从创建到消失的持续时间
     private int mSpeed = 200;          // 波纹的创建速度，每200ms创建一个
     private float mMaxRadiusRate = 0.85f;
@@ -177,8 +177,8 @@ public class MySurfaceView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //mPaint.setColor(Color.GREEN);
-        mPaint.setColor(0xff8bc5ba);
+        mPaint.setColor(Color.BLACK);
+        //mPaint.setColor(0xff8bc5ba);
         Iterator<Circle> iterator = mCircleList.iterator();
         while (iterator.hasNext()) {
             Circle circle = iterator.next();
@@ -258,14 +258,18 @@ public class MySurfaceView extends View {
         int index = event.getActionIndex();
         int action = event.getActionMasked();
         int pointerId = event.getPointerId(index);
+        mX = (int)event.getX();
+        mY = (int) event.getY();
+        start();
+        invalidate();
 
         switch(action) {
             case MotionEvent.ACTION_DOWN:
                 //MyBean bean = new MyBean();
-                mX = (int)event.getX();
-                mY = (int) event.getY();
-                start();
-                invalidate();
+                //mX = (int)event.getX();
+                //mY = (int) event.getY();
+                //start();
+                //invalidate();
 
                 //SurfaceView  surfaceView = new SurfaceView() ;         //创建一个Surface对象
                 //GameView gameView = new GameView(getContext());
