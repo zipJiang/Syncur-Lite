@@ -1,30 +1,51 @@
 package com.example.myadmin.tutorial;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import static android.app.PendingIntent.getActivity;
 import static android.view.Gravity.CENTER;
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 
 public class Main extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.myadmin.Main.MESSAGE";
+    public static int width;
+    public static int height;
     private static final String TAG = "Main";
-    @Override
+    private static int port = 1788;
+    public static networkThread mnetworkThread = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
     public void toSensorMode(View view) {
-        EditText editText = (EditText)findViewById(R.id.ip);
+        final EditText editText = (EditText)findViewById(R.id.ip);
         String message = editText.getText().toString();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setPositiveButton(R.string.fire, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                editText.setText("", TextView.BufferType.EDITABLE);
+            }
+        });
+
+        /* Connect to WIFI here, before entering the new window */
+        mnetworkThread = new networkThread(port, message);
         /* We will check here for message format */
         try{
             /* First check for invalid character */
@@ -44,31 +65,80 @@ public class Main extends AppCompatActivity {
         }
         catch(Exception e) {
             String m = e.getMessage();
+            Log.d(TAG, m);
             /* Display Message in a Pop-up window */
-            LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService
-                    (Context.LAYOUT_INFLATER_SERVICE);
-            ViewGroup errorLayout = (ViewGroup)inflater.inflate(R.layout.popup, null);
-            TextView tv = (TextView)errorLayout.findViewById(R.id.errorText);
-            tv.setText(m);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int height = displayMetrics.heightPixels;
-            int width = displayMetrics.widthPixels;
-            final PopupWindow pw = new PopupWindow(errorLayout, (int)(width * 0.8), WRAP_CONTENT, true);
-            /* Empty the input box */
-            editText.setText("", TextView.BufferType.EDITABLE);
-            pw.showAtLocation(findViewById(R.id.activity_main), CENTER, 0, 0);
-            Button close = (Button) errorLayout.findViewById(R.id.okbutton);
-            close.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View popupView) {
-                    pw.dismiss();
-                }
-            });
+            builder.setMessage(m)
+                    .setTitle(R.string.error);
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
             return ;
         }
-        Intent intent = new Intent(this, SensorActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+
+        ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        /* Seems that we don't have to use Connectivity Manager */
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        /* Check whether wifi is connected */
+        boolean isWifiConn = networkInfo.isConnected();
+        if(isWifiConn) {
+            /* Proceed to next Stage */
+            /* Send data to the specified ip address */
+            /* This part is error prone and should be handled */
+            mnetworkThread.start();
+
+            try{
+                mnetworkThread.join();
+            }
+            catch(InterruptedException e) {
+                String m = "Network Thread Interrupted.";
+                Log.d(TAG, m);
+
+                /* Display Message in a Pop-up window */
+                /* Display Message in a Pop-up window */
+                builder.setMessage(m)
+                        .setTitle(R.string.error);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return ;
+            }
+
+            try{
+
+                if(mnetworkThread.dos == null) {
+                    throw new Exception("Failed to create stable socket.");
+                }
+                mnetworkThread.dos.writeBytes("SensorMode\n");
+
+            }
+            catch(Exception e) {
+                String m = e.getMessage();
+                Log.d(TAG, m);
+                /* Display Message in a Pop-up window */
+                builder.setMessage(m)
+                        .setTitle(R.string.error);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return ;
+            }
+
+            Intent intent = new Intent(this, SensorActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
+        }
+        else {
+            /* these naiive place holder should be changed to log recorder */
+            String m = "No wifi connection detected.";
+            Log.d(TAG, m);
+            /* Display Message in a Pop-up window */
+            builder.setMessage(m)
+                    .setTitle(R.string.error);
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
     public void toTouchMode(View view) {
 
@@ -94,30 +164,14 @@ public class Main extends AppCompatActivity {
         }
         catch(Exception e) {
             String m = e.getMessage();
-            /* Display Message in a Pop-up window */
-            LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService
-                    (Context.LAYOUT_INFLATER_SERVICE);
-            ViewGroup errorLayout = (ViewGroup)inflater.inflate(R.layout.popup, null);
-            TextView tv = (TextView)errorLayout.findViewById(R.id.errorText);
-            tv.setText(m);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int height = displayMetrics.heightPixels;
-            int width = displayMetrics.widthPixels;
-            final PopupWindow pw = new PopupWindow(errorLayout, (int)(width * 0.8), WRAP_CONTENT, true);
-            /* Empty the input box */
-            editText.setText("", TextView.BufferType.EDITABLE);
-            pw.showAtLocation(findViewById(R.id.activity_main), CENTER, 0, 0);
-            Button close = (Button) errorLayout.findViewById(R.id.okbutton);
-            close.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View popupView) {
-                    pw.dismiss();
-                }
-            });
+            Log.d(TAG, m);
+
             return ;
         }
         Intent intent = new Intent(this, TouchScreenActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
+        finish();
     }
+
 }

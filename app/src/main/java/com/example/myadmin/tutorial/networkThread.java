@@ -1,10 +1,11 @@
 package com.example.myadmin.tutorial;
 
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.io.DataOutputStream;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.security.Security;
 
 /**
@@ -14,42 +15,41 @@ public class networkThread extends Thread {
     public int port;
     public DataOutputStream dos;
     private String ipAdd;
+    private static final String TAG = "networkThread";
     @Override
     public void run() {
-        byte[] ipAddress = new byte[4];
-        int[] ipAddressInt = new int[4];
-        int locationA = ipAdd.indexOf(".", 0);
-        int locationB = ipAdd.indexOf(".", locationA + 1);
-        int locationC = ipAdd.indexOf(".", locationB + 1);
-        ipAddressInt[0] = Integer.parseInt(ipAdd.substring(0, locationA));
-        ipAddressInt[1] = Integer.parseInt(ipAdd.substring(locationA + 1, locationB));
-        ipAddressInt[2] = Integer.parseInt(ipAdd.substring(locationB + 1, locationC));
-        ipAddressInt[3] = Integer.parseInt(ipAdd.substring(locationC + 1, ipAdd.length()));
-
-        for(int i = 0; i != 4; ++i) {
-            ipAddress[i] = (byte)ipAddressInt[i];
-        }
+        SocketAddress socketAddress = new InetSocketAddress(ipAdd , port);
 
         /* End hard coding */
-        InetAddress targetAddress = null;
-        try {
-            targetAddress = InetAddress.getByAddress(ipAddress);
-        }
-        catch(UnknownHostException e) {
-            System.out.println("Unknown Host!");
-        }
+
         try {
             /* This part should be carefully coded */
-            Socket connectionSock = new Socket(targetAddress, port);
+            Socket connectionSock = new Socket();
+            connectionSock.connect(socketAddress, 5000);
             dos = new DataOutputStream(
                     connectionSock.getOutputStream()
             );
         }
+        catch(SocketTimeoutException e) {
+            String m = "Connection timeout";
+            Log.d(TAG, m);
+            /* Explicitly set dos to null indicating a bad connection */
+            dos = null;
+            return ;
+        }
         catch(IOException e) {
-            System.out.println("Error handling read and write.");
+            String m = "Error handling read and write.";
+            Log.d(TAG, m);
+            /* Explicitly set dos to null indicating a bad connection */
+            dos = null;
+            return ;
         }
         catch(SecurityException e) {
-            System.out.println("Security Check failed.");
+            String m = "Security Failed.";
+            Log.d(TAG, m);
+            /* Explicitly set dos to null indicating a bad connection */
+            dos = null;
+            return ;
         }
     }
 

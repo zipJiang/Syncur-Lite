@@ -31,4 +31,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="guidance">Please Enter Your Destination IP Here:</string>
     <string name="checked">Got It</string>
+    <string name="fire">sure</string>
+    <string name="cancel">not yet</string>
+    <string name="error">An Error Occurred!</string>
+
 </resources>
