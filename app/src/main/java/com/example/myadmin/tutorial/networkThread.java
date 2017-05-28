@@ -12,10 +12,11 @@ import java.security.Security;
  * Created by myadmin on 16/05/2017.
  */
 public class networkThread extends Thread {
-    public int port;
-    public DataOutputStream dos;
+    private int port;
+    DataOutputStream dos;
     private String ipAdd;
     private static final String TAG = "networkThread";
+    private Socket connectionSock;
     @Override
     public void run() {
         SocketAddress socketAddress = new InetSocketAddress(ipAdd , port);
@@ -24,7 +25,7 @@ public class networkThread extends Thread {
 
         try {
             /* This part should be carefully coded */
-            Socket connectionSock = new Socket();
+            connectionSock = new Socket();
             connectionSock.connect(socketAddress, 5000);
             dos = new DataOutputStream(
                     connectionSock.getOutputStream()
@@ -53,9 +54,18 @@ public class networkThread extends Thread {
         }
     }
 
-    public networkThread(int p, String m) {
+    networkThread(int p, String m) {
         this.port = p;
         this.ipAdd = m;
+    }
+
+    void off() {
+        try {
+            connectionSock.close();
+        }
+        catch(IOException e) {
+            Log.d(TAG, "Socket closing failed: IO Exception thrown");
+        }
     }
 
 }

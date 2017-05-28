@@ -9,11 +9,6 @@ import android.widget.TextView;
 
 import java.io.*;
 
-
-import static android.view.Gravity.CENTER;
-import static android.widget.ListPopupWindow.WRAP_CONTENT;
-
-
 public class SensorActivity extends AppCompatActivity implements SensorEventListener {
 
     private static SensorManager mSensorManager;
@@ -91,6 +86,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     protected void onPause() {
         super.onPause();
+        Main.mnetworkThread.off();
+        finish();
         mSensorManager.unregisterListener(this);
     }
 }
