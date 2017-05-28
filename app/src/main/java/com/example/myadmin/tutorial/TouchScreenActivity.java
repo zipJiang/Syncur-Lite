@@ -65,7 +65,7 @@ public class TouchScreenActivity extends AppCompatActivity {
 
     /* Here start my own code */
     //private VelocityTracker mVelocityTracker = null;
-    private static int port = 1777;
+    private static int port = 1788;
     private static DataOutputStream dStream = null;
 
     /*

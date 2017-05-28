@@ -19,7 +19,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     private static SensorManager mSensorManager;
     private static Sensor mMotion;
-    private static int port = 1765;
+    private static int port = 1788;
     private static DataOutputStream dStream = null;
     /* Hard coded */
 
@@ -102,7 +102,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         /* Write data to dos */
         try {
-            dStream.writeBytes(axisX + " " + axisY + " " + axisZ + "\n");
+            dStream.writeBytes("MOVE:" + axisX + " " + axisY + " " + axisZ + "\n");
         }
         catch(IOException e) {
             System.out.println("Bytes writing failed!");

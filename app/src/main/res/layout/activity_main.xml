@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:text="@string/guidance"
+                android:hint="@string/guidance"
                 android:ems="10"
                 android:id="@+id/ip"
                 android:layout_weight="33"
