@@ -22,10 +22,15 @@ public class TouchScreenActivity extends AppCompatActivity {
         /* End message extraction */
         MySurfaceView mysurfaceView = (MySurfaceView)findViewById(R.id.touchScreen);
         mysurfaceView.setOutputStream(Main.mnetworkThread.dos);
-        mysurfaceView.setPort(Main.mnetworkThread.port);
 
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Main.mnetworkThread.off();
+        finish();
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.example.myadmin.tutorial;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.content.Intent;
 import android.widget.EditText;
@@ -26,7 +23,7 @@ public class Main extends AppCompatActivity {
     public static int width;
     public static int height;
     private static final String TAG = "Main";
-    private static int port = 1788;
+    private static int port = 1700;
     static networkThread mnetworkThread = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

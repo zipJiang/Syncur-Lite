@@ -12,7 +12,7 @@ import java.security.Security;
  * Created by myadmin on 16/05/2017.
  */
 public class networkThread extends Thread {
-    private int port;
+    int port;
     DataOutputStream dos;
     private String ipAdd;
     private static final String TAG = "networkThread";
@@ -26,7 +26,7 @@ public class networkThread extends Thread {
         try {
             /* This part should be carefully coded */
             connectionSock = new Socket();
-            connectionSock.connect(socketAddress, 5000);
+            connectionSock.connect(socketAddress, 2000);
             dos = new DataOutputStream(
                     connectionSock.getOutputStream()
             );

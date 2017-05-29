@@ -93,9 +93,6 @@ public class MySurfaceView extends View {
         dStream = d;
     }
 
-    public void setPort(int p) {
-        port = p;
-    }
 
     private static final int MAX_CLICK_DURATION = 200;
     private long startClickTime = 0;
