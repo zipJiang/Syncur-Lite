@@ -1,5 +1,7 @@
 package com.example.myadmin.tutorial;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,12 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.content.Intent;
-import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.Button;
+import android.graphics.Typeface;
 
-import static android.app.PendingIntent.getActivity;
-import static android.view.Gravity.CENTER;
-import static android.widget.ListPopupWindow.WRAP_CONTENT;
+import android.widget.*;
 
 public class Main extends AppCompatActivity {
 
@@ -30,6 +31,15 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EditText editText = (EditText)findViewById(R.id.ip);
+        Button button1 = (Button)findViewById(R.id.sensorMode);
+        Button button2 = (Button)findViewById(R.id.touchMode);
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"JosefinSans.ttf");
+        editText.setTypeface(typeface);
+        button1.setTypeface(typeface);
+        button2.setTypeface(typeface);
+        //editText.setBackgroundColor(Color.BLUE);
+        editText.setBackgroundColor(Color.GRAY);
     }
     public void toSensorMode(View view) {
         final EditText editText = (EditText)findViewById(R.id.ip);
