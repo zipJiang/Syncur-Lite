@@ -94,6 +94,17 @@ public class Main extends AppCompatActivity {
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         /* Seems that we don't have to use Connectivity Manager */
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if(networkInfo == null) {
+            /* these naiive place holder should be changed to log recorder */
+            String m = "No wifi connection detected.";
+            Log.d(TAG, m);
+            /* Display Message in a Pop-up window */
+            builder.setMessage(m)
+                    .setTitle(R.string.error);
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
         /* Check whether wifi is connected */
         boolean isWifiConn = networkInfo.isConnected();
         if(isWifiConn) {

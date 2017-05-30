@@ -88,6 +88,15 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         /* Seems that we don't have to use Connectivity Manager */
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if(networkInfo == null) {
+            /* these naiive place holder should be changed to log recorder */
+            String m = "No wifi connection detected.";
+            Intent intent = new Intent(this, Main.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         /* Check whether wifi is connected */
         boolean isWifiConn = networkInfo.isConnected();
 

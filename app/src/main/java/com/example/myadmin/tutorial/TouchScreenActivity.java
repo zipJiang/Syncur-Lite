@@ -1,6 +1,7 @@
 package com.example.myadmin.tutorial;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -41,6 +42,15 @@ public class TouchScreenActivity extends AppCompatActivity {
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         /* Seems that we don't have to use Connectivity Manager */
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if(networkInfo == null) {
+            /* these naiive place holder should be changed to log recorder */
+            String m = "No wifi connection detected.";
+            Intent intent = new Intent(this, Main.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         /* Check whether wifi is connected */
         boolean isWifiConn = networkInfo.isConnected();
 
