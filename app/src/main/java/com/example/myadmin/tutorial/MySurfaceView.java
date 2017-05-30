@@ -18,12 +18,6 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-//import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 
 import android.support.v4.view.VelocityTrackerCompat;

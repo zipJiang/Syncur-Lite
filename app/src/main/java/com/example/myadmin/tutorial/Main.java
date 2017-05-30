@@ -8,9 +8,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.content.Intent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Button;
 import android.graphics.Typeface;
@@ -23,16 +25,23 @@ public class Main extends AppCompatActivity {
     public static int width;
     public static int height;
     private static final String TAG = "Main";
-    private static int port = 1700;
+    static int port = 1700;
     static networkThread mnetworkThread = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
         EditText editText = (EditText)findViewById(R.id.ip);
         Button button1 = (Button)findViewById(R.id.sensorMode);
         Button button2 = (Button)findViewById(R.id.touchMode);
         Typeface typeface = Typeface.createFromAsset(getAssets(),"JosefinSans.ttf");
         editText.setTypeface(typeface);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editText.setInputType(EditorInfo.TYPE_CLASS_PHONE);
         button1.setTypeface(typeface);
         button2.setTypeface(typeface);
         //editText.setBackgroundColor(Color.BLUE);
@@ -254,6 +263,16 @@ public class Main extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EditText editText = (EditText)findViewById(R.id.ip);
+        /* Set text back to the original port */
+        if(mnetworkThread != null) {
+            editText.setText(mnetworkThread.getIP(), TextView.BufferType.EDITABLE);
         }
     }
 
