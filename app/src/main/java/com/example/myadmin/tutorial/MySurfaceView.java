@@ -350,7 +350,7 @@ public class MySurfaceView extends View {
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                secondTouch = false;
+                //secondTouch = false;
                 /* Generate a right click */
                 long semiDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
                 /*if( scoll == true ){
