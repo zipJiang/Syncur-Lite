@@ -1,5 +1,6 @@
 package com.example.myadmin.tutorial;
 
+import android.text.method.Touch;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
@@ -316,15 +317,15 @@ public class MySurfaceView extends View {
                         VelocityTrackerCompat.getXVelocity(mVelocityTracker,
                                 pointerId));
                 Float fXV =
-                        new Float(VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId));
+                        VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId) * TouchScreenActivity.coeff;
                 Log.d("", "Y velocity: " +
                         VelocityTrackerCompat.getYVelocity(mVelocityTracker,
                                 pointerId));
                 Float fYV =
-                        new Float(VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId));
+                        VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId) * TouchScreenActivity.coeff;
                 /* And I should send data to the server */
                 long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                if(secondTouch ==true && clickDuration <= MAX_CLICK_DURATION ||(scoll == true)){
+                if(secondTouch && clickDuration <= MAX_CLICK_DURATION ||(scoll)){
                     scoll = true;
                     try{
                         dStream.writeBytes("SCOLL:" + fXV.toString() + " " + fYV.toString() + "\n");
@@ -332,10 +333,10 @@ public class MySurfaceView extends View {
                         System.out.println("write to dStream failed.");
                     }
                 }
-                else if(secondTouch == true && clickDuration > MAX_CLICK_DURATION && drag == false){
+                else if(secondTouch && clickDuration > MAX_CLICK_DURATION && drag){
                     drag = true;
                     try{
-                        System.out.println("DRAGING~~~");
+                        //System.out.println("DRAGING~~~");
                         dStream.writeBytes("DRAG:" + fXV.toString() + " " + fYV.toString() + "\n");
                     } catch(IOException e) {
                         System.out.println("write to dStream failed.");
@@ -365,7 +366,7 @@ public class MySurfaceView extends View {
                         System.out.println("write to dStream failed.");
                     }
                 }*/
-                if(scoll = true) scoll = false;
+                if(scoll) scoll = false;
 
                 if(semiDuration < MAX_CLICK_DURATION){
                     try {
@@ -390,8 +391,8 @@ public class MySurfaceView extends View {
                         System.out.println("write to dStream failed.");
                     }
                 }*/
-                if(scoll == true) scoll = false;
-                if(drag == true){
+                if(scoll) scoll = false;
+                if(drag){
                     drag= false;
                     try {
                         dStream.writeBytes("RELEASE:" + "\n");

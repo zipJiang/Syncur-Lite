@@ -1,11 +1,19 @@
 package com.example.myadmin.tutorial;
 
+/*
+ *  这个类对应layout文件夹中的activity_main活动
+ *  该事件是整个程序的login activity，主要负责
+ *  处理ip地址的设置以及连接模式的选择，活动要求
+ *  在输入不合法和未能连接的ip地址时报错但是不退出，
+ *  而是重新请求输入IP地址，以保证整个程序的稳定性
+ */
 import android.graphics.Color;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -21,11 +29,18 @@ import android.widget.*;
 
 public class Main extends AppCompatActivity {
 
+    /* 这个是该活动的附加签名，利用这个字符串来标识intent来自这个活动的实例 */
     static final String EXTRA_MESSAGE = "com.example.myadmin.Main.MESSAGE";
-    public static int width;
-    public static int height;
+    //public static int width;
+    //public static int height;
     private static final String TAG = "Main";
+    /* 这是随机选择的port， 唯一的要求是与server端的port一致 */
     static int port = 1700;
+    /*
+     * 网络服务需要由独立的线程来处理，这个线程的实例定义为 Main 类中的 static 成员
+     * 这样既方便于在 activity_main 中检验线程实例是否正常，也保证了多 activity
+     * 实例共用一个网络线程
+     */
     static networkThread mnetworkThread = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +49,7 @@ public class Main extends AppCompatActivity {
             return;
         }
 
+        /* 这里是对系统UI的初始化 */
         setContentView(R.layout.activity_main);
         EditText editText = (EditText)findViewById(R.id.ip);
         Button button1 = (Button)findViewById(R.id.sensorMode);
@@ -47,10 +63,16 @@ public class Main extends AppCompatActivity {
         //editText.setBackgroundColor(Color.BLUE);
         editText.setBackgroundColor(Color.GRAY);
     }
+    /* 触屏模式：在点击对应的 button 后被激活，首先检查ip地址的合法性、
+       网络连接的正常与否并尝试连接对应的 socket 如果超时连接仍失败
+       或者未通过验证，则删除 ip 地址栏的内容并要求用户重新输入ip地址
+     */
     public void toSensorMode(View view) {
         final EditText editText = (EditText)findViewById(R.id.ip);
         String message = editText.getText().toString();
-
+        /* 由于 AlertDialog.Builder 的要求类似，所以只在程序最开始
+            生成一遍，之后都用相同的 builder 生成alert dialog
+         */
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setPositiveButton(R.string.fire, new DialogInterface.OnClickListener() {
@@ -65,6 +87,7 @@ public class Main extends AppCompatActivity {
         /* We will check here for message format */
         try{
             /* First check for invalid character */
+//          /* 检验IP地址的形式 */
             int dotCount = 0;
             for(int i = 0; i != message.length(); ++i) {
                 char currChar = message.charAt(i);
@@ -90,7 +113,7 @@ public class Main extends AppCompatActivity {
             dialog.show();
             return ;
         }
-
+        /* 由于原先使用的网络连接检验方法被标注为deprecated，所以现在改为利用简单的检验是否具有可使用的wifi作为标准 */
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         /* Seems that we don't have to use Connectivity Manager */
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -150,7 +173,7 @@ public class Main extends AppCompatActivity {
                 dialog.show();
                 return ;
             }
-
+            /* 如果已经成功完成网络套接字接口的写入，则启动对应的鼠标控制模式活动 */
             Intent intent = new Intent(this, SensorActivity.class);
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
@@ -168,6 +191,7 @@ public class Main extends AppCompatActivity {
         }
     }
     public void toTouchMode(View view) {
+        /* 基本的逻辑与 Sensor 模式类似。*/
         final EditText editText = (EditText)findViewById(R.id.ip);
         String message = editText.getText().toString();
 
@@ -279,6 +303,7 @@ public class Main extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        /* 重写了父类中的 onResume 函数保证每次重新登入时会自动填写ip */
         super.onResume();
         EditText editText = (EditText)findViewById(R.id.ip);
         /* Set text back to the original port */

@@ -1,25 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/errorPop"
-              android:background="@color/colorPrimaryDark"
->
+              android:layout_height="match_parent">
+
     <TextView
-            android:text=""
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:id="@+id/errorText"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarProg"
+            android:layout_weight="40"/>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarSensi"
+            android:paddingTop="10px"
+            android:paddingBottom="10px"
+            android:paddingLeft="30px"
+            android:paddingRight="30px"
             android:layout_weight="60"
-            android:textAlignment="center"
-            android:textSize="12pt"
-    />
-    <Button
-            android:text="@string/checked"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:id="@+id/okbutton"
-            android:layout_weight="40"
-    />
+            android:max="1000" android:progress="500"/>
 </LinearLayout>

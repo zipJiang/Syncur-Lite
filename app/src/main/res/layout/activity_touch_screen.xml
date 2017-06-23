@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+        android:id="@+id/myCoordinatorLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -21,7 +27,15 @@
                 android:id="@+id/touchScreen"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="100"
+                android:layout_weight="90"
         />
+        <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/testB"
+                android:layout_weight="10"
+                android:onClick="activateSnackBar"/>
     </LinearLayout>
 </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

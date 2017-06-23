@@ -31,8 +31,11 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="guidance">Please Enter Your Destination IP Here:</string>
     <string name="checked">Got It</string>
-    <string name="fire">sure</string>
+    <string name="fire">SURE</string>
     <string name="cancel">not yet</string>
     <string name="error">An Error Occurred!</string>
+    <string name="sensi">Adjust Sensitivity</string>
+    <string name="show">Show Sensitivity Adjustment</string>
+    <string name="changeSensitivity">Please draw the button to set new sensitivity value:</string>
 
 </resources>
