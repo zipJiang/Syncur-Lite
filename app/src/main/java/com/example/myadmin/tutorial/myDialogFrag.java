@@ -63,8 +63,7 @@ public class myDialogFrag extends DialogFragment {
 
         SeekBar mySeekBar = (SeekBar)myView.findViewById(R.id.seekBarSensi);
         TextView subTextView = (TextView)myView.findViewById(R.id.seekBarProg);
-        Integer temp = (int)(TouchScreenActivity.coeff * 1000 * 1000 * 4);
-        subTextView.setText(String.valueOf(temp));
+        subTextView.setText(String.valueOf(TouchScreenActivity.coeff));
         mySeekBar.setProgress((int)(TouchScreenActivity.coeff * 1000 * 1000 * 4));
         mySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue;
@@ -73,7 +72,7 @@ public class myDialogFrag extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressValue = progress;
-                myTextView.setText(String.valueOf(progress));
+                myTextView.setText(String.valueOf((float)progressValue / (float)(1000 * 1000 * 4)));
             }
 
             @Override
