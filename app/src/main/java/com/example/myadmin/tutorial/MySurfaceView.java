@@ -1,9 +1,5 @@
 package com.example.myadmin.tutorial;
 
-import android.text.method.Touch;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.WindowManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.View;
-import android.graphics.Bitmap;
-import android.widget.ImageView;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.MotionEvent;
@@ -20,11 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 import android.support.v4.view.VelocityTrackerCompat;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
 
@@ -36,45 +27,6 @@ import java.util.Calendar;
 /**
  * Created by myadmin on 18/05/2017.
  */
-
-
-/*
-class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    SurfaceHolder surfaceHolder;
-    public GameView(Context context) {
-        super(context);
-        surfaceHolder = this.getHolder();
-        surfaceHolder.addCallback(this);
-        this.setFocusable(true);
-    }
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    }
-    public void surfaceCreated(SurfaceHolder holder) {
-    }
-    public void surfaceDestroyed(SurfaceHolder holder) {
-    }
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:   // 点击屏幕后 半径设为0,alpha设置为255
-                MyBean bean = new MyBean();
-                bean.radius = 0; // 点击后 半径先设为0
-                bean.alpha = 255; // alpha设为最大值 255
-                bean.width = bean.radius / 8; // 描边宽度 这个随意
-                bean.X = (int) event.getX(); // 所绘制的圆的X坐标
-                bean.Y = (int) event.getY(); // 所绘制的圆的Y坐标
-                bean.paint = new Paint();
-                bean.paint.setColor(Color.BLACK);
-                bean.paint.setStyle(Style.STROKE);
-                bean.paint.setStrokeWidth(bean.width);
-                Canvas canvas = surfaceHolder.lockCanvas();
-                canvas.drawCircle(bean.X,bean.Y,10,bean.paint);
-                break;
-        }
-        return true;
-    }
-}*/
 
 public class MySurfaceView extends View {
     private DataOutputStream dStream;
@@ -88,41 +40,38 @@ public class MySurfaceView extends View {
         dStream = d;
     }
 
+    public void setPort(int p) {
+        port = p;
+    }
 
-    private static final int MAX_CLICK_DURATION = 200;
-    private long startClickTime = 0;
-    private boolean secondTouch = false;
-    private boolean scoll = false;
-    private boolean drag = false;
-    private float startX = 0;
-    private float startY = 0;
-    private float mX = 0;
-    private float mY = 0;
-    //private ImageView iv_canvas;
-    //private Bitmap baseBitmap = null;
-    //private Canvas canvas;
-    //private  ImageView iv_canvas = (ImageView) findViewById(R.id.iv_canvas);
-
+    /**
+     *  触屏模式的UI设计
+     *  当你触碰到手机屏幕时，手机屏幕上会在你触碰的位置显示一段波纹
+     *  波纹是由一系列不断生成的圆环构成的
+     */
     private float mInitialRadius = 0;   // 初始波纹半径
-    private float mMaxRadius = 50;     // 最大波纹半径
-    private long mDuration = 500;      // 一个波纹从创建到消失的持续时间
-    private int mSpeed = 200;          // 波纹的创建速度，每200ms创建一个
+    private float mMaxRadius = 50;     //  最大波纹半径
+    private long mDuration = 500;      //  波纹最大持续时间
+    private int mSpeed = 200;          //  波纹扩散速度
     private float mMaxRadiusRate = 0.85f;
     private boolean mMaxRadiusSet = true;
 
     private boolean mIsRunning;
     private long mLastCreateTime;
     private List<Circle> mCircleList = new ArrayList<Circle>();
+    /**
+     *   不断生成圆
+     */
     private Runnable mCreateCircle = new Runnable() {
         @Override
         public void run() {
             if (mIsRunning) {
                 newCircle();
-                postDelayed(mCreateCircle, mSpeed);
+                postDelayed(mCreateCircle, mSpeed);  //每隔mSpeed毫秒创建一个圆
             }
         }
     };
-    private Interpolator mInterpolator = new LinearInterpolator();
+    private Interpolator mInterpolator = new LinearInterpolator();    //创建差值器 用来计算圆的透明度与半径
 
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -133,16 +82,12 @@ public class MySurfaceView extends View {
         }
     }
 
-    //public void setMaxRadiusRate(float maxRadiusRate) {
-    //    mMaxRadiusRate = maxRadiusRate;
-   // }
-
     public void setColor(int color) {
         mPaint.setColor(color);
     }
 
     /**
-     * 开始
+     *   启动扩散
      */
     public void start() {
         if (!mIsRunning) {
@@ -152,14 +97,14 @@ public class MySurfaceView extends View {
     }
 
     /**
-     * 缓慢停止
+     *  缓慢停止
      */
     public void stop() {
         mIsRunning = false;
     }
 
     /**
-     * 立即停止
+     *  立刻停止
      */
     public void stopImmediately() {
         mIsRunning = false;
@@ -167,48 +112,39 @@ public class MySurfaceView extends View {
         invalidate();
     }
 
+    /**
+     *  绘制波纹
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(Color.BLACK);
-        //mPaint.setColor(0xff8bc5ba);
+        mPaint.setColor(Color.BLACK);                             // 设置波纹颜色
         Iterator<Circle> iterator = mCircleList.iterator();
         while (iterator.hasNext()) {
             Circle circle = iterator.next();
             float radius = circle.getCurrentRadius();
-            //mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setStyle(Style.STROKE);
+            mPaint.setStyle(Style.STROKE);                        // 设置波纹样式(圆环)
             mPaint.setStrokeWidth(radius/3);
+            /**
+             *  该圆环的扩散时间没有超过最大扩散时间
+             *  计算当前时刻圆环的透明度与半径
+             *  并绘制
+             */
             if (System.currentTimeMillis() - circle.mCreateTime < mDuration) {
                 mPaint.setAlpha(circle.getAlpha());
                 canvas.drawCircle(mX, mY, radius, mPaint);
             } else {
-                iterator.remove();
+                iterator.remove();                    //移除
             }
         }
-        //if (mCircleList.size() > 0) {
-        //    postInvalidateDelayed(10);
-        //}
 
     }
 
-    //public void setInitialRadius(float radius) {
-   //     mInitialRadius = radius;
-   // }
 
-    //public void setDuration(long duration) {
-    //    mDuration = duration;
-    //}
-
-    //public void setMaxRadius(float maxRadius) {
-   //     mMaxRadius = maxRadius;
-   //     mMaxRadiusSet = true;
-   // }
-
-    //public void setSpeed(int speed) {
-    //    mSpeed = speed;
-   // }
-
+    /**
+     *  创建新的圆
+     *  并将新创建的圆加入圆列表
+     */
     private void newCircle() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - mLastCreateTime < mSpeed) {
@@ -220,6 +156,10 @@ public class MySurfaceView extends View {
         mLastCreateTime = currentTime;
     }
 
+    /**
+     *  圆类
+     *  可以计算当前圆的透明度与半径
+     */
     private class Circle {
         private long mCreateTime;
 
@@ -238,94 +178,90 @@ public class MySurfaceView extends View {
         }
     }
 
-   // public void setInterpolator(Interpolator interpolator) {
-    //    mInterpolator = interpolator;
-   //     if (mInterpolator == null) {
-   //         mInterpolator = new LinearInterpolator();
-   //     }
-  //  }
 
+    /**
+     *  手势部分使用的一些变量
+     */
+    private static final int MAX_CLICK_DURATION = 400;     // 一个动作的最大持续时间
+    private long startClickTime = 0;                       // 一个动作的开始时间
+    private boolean secondTouch = false;                   // 是否多指触控
+    private boolean scoll = false;                         // 是否为滚轮操作
+    private boolean drag = false;                          // 是否为拖拽操作
+    private float mX = 0;                                  // 手机屏幕的X坐标
+    private float mY = 0;                                  // 手机屏幕的Y坐标
 
+    /**
+     *  对手势进行判断
+     *  并将数据传递到电脑端
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int index = event.getActionIndex();
         int action = event.getActionMasked();
         int pointerId = event.getPointerId(index);
+        /**
+         *  按下手机屏幕一个位置时在该处绘制波纹
+         */
         mX = (int)event.getX();
         mY = (int) event.getY();
         start();
         invalidate();
 
         switch(action) {
+
+            /**
+             *  如果事件是按下屏幕
+             */
             case MotionEvent.ACTION_DOWN:
 
-                //mX = (int)event.getX();
-                //mY = (int) event.getY();
-                //start();
-                //invalidate();
-
-                //SurfaceView  surfaceView = new SurfaceView() ;         //创建一个Surface对象
-                //GameView gameView = new GameView(getContext());
-                //SurfaceHolder surfaceHolder = surfaceView. getHolder() ;  //获得SurfaceHolder对象
-                //Canvas   canvas  = gameView.surfaceHolder.lockCanvas() ;          //获得canvas对象
-                //进行绘图操作
-                //surfaceHolder.unlockCanvasAndPost(canvas) ;            //释放canvas锁，并且显示视图
-                //利用canvas进行绘图操作
-                //iv_canvas = (ImageView) findViewById(R.id.iv_canvas);
-                //if(baseBitmap == null){
-                    //baseBitmap = Bitmap.createBitmap(iv_canvas.getWidth(),iv_canvas.getHeight(),Bitmap.Config.ARGB_8888);
-                    //baseBitmap = Bitmap.createBitmap(getHeight(),getWidth(),Bitmap.Config.ARGB_8888);
-                    //System.out.println("???!!!" + getHeight() + " " + getWidth());
-                    //canvas = new Canvas(baseBitmap);
-                    //canvas.drawColor(Color.WHITE);
-               // }
-                //canvas.drawCircle(bean.X,bean.Y,10,bean.paint);
-                //gameView.surfaceHolder.unlockCanvasAndPost(canvas);
-                //iv_canvas.setImageBitmap(baseBitmap);
-
-                startClickTime = Calendar.getInstance().getTimeInMillis();
+                startClickTime = Calendar.getInstance().getTimeInMillis();            //记录按下的时间
+                /**
+                 *  关于速度追踪器的一些设置
+                 */
                 if(mVelocityTracker == null) {
-                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
-                    mVelocityTracker = VelocityTracker.obtain();
+                    mVelocityTracker = VelocityTracker.obtain();  //获得一个新的速度追踪器的对象
                 }
                 else {
-                    // Reset the velocity tracker back to its initial state.
-                    mVelocityTracker.clear();
+                    mVelocityTracker.clear(); // 重置到初始状态
                 }
-                // Add a user's movement to the tracker.
-                mVelocityTracker.addMovement(event);
+                mVelocityTracker.addMovement(event);  // 将该事件添加到速度追踪器的动作中
                 break;
 
+            /**
+             *  如果有更多的手指按下了屏幕
+             */
             case MotionEvent.ACTION_POINTER_DOWN:
-                //startX = event.getX();
-                //startY = event.getY();
                 secondTouch = true;
                 break;
+
+            /**
+             *  如果事件是移动
+             */
             case MotionEvent.ACTION_MOVE:
-                //if(secondTouch == true ) {
-                //    scoll = true;
-                //    break;
-                //}
                 mVelocityTracker.addMovement(event);
-                // When you want to determine the velocity, call
-                // computeCurrentVelocity(). Then call getXVelocity()
-                // and getYVelocity() to retrieve the velocity for each pointer ID.
+                /**
+                 *  计算当前移动速度
+                 *  将X、Y方向上的速度记录到fXV,fYV中
+                 */
                 mVelocityTracker.computeCurrentVelocity(1000);
-                // Log velocity of pixels per second
-                // Best practice to use VelocityTrackerCompat where possible.
+
                 Log.d("", "X velocity: " +
                         VelocityTrackerCompat.getXVelocity(mVelocityTracker,
                                 pointerId));
                 Float fXV =
-                        VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId) * TouchScreenActivity.coeff;
+                        new Float(VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId));
                 Log.d("", "Y velocity: " +
                         VelocityTrackerCompat.getYVelocity(mVelocityTracker,
                                 pointerId));
                 Float fYV =
-                        VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId) * TouchScreenActivity.coeff;
-                /* And I should send data to the server */
-                long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                if(secondTouch && clickDuration <= MAX_CLICK_DURATION ||(scoll)){
+                        new Float(VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId));
+
+                /**
+                 *  判断事件类型
+                 *  并将相应数据传递至服务器端
+                 */
+                long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;                // 计算动作持续时间
+                if(secondTouch ==true && clickDuration <= MAX_CLICK_DURATION ||(scoll == true)){               // 判断为滚轮操作
                     scoll = true;
                     try{
                         dStream.writeBytes("SCOLL:" + fXV.toString() + " " + fYV.toString() + "\n");
@@ -333,16 +269,16 @@ public class MySurfaceView extends View {
                         System.out.println("write to dStream failed.");
                     }
                 }
-                else if(secondTouch && clickDuration > MAX_CLICK_DURATION && drag){
+                else if(secondTouch == true && clickDuration > MAX_CLICK_DURATION && drag == false && scoll == false){     // 判断为拖拽操作
                     drag = true;
                     try{
-                        //System.out.println("DRAGING~~~");
+                        System.out.println("DRAGING~~~");
                         dStream.writeBytes("DRAG:" + fXV.toString() + " " + fYV.toString() + "\n");
                     } catch(IOException e) {
                         System.out.println("write to dStream failed.");
                     }
                 }
-                else {
+                else {                                                                                          // 其余为单纯的移动操作
                     try {
                         dStream.writeBytes("MOVE:" + fXV.toString() + " " + fYV.toString() + "\n");
                     } catch (IOException e) {
@@ -350,25 +286,15 @@ public class MySurfaceView extends View {
                     }
                 }
                 break;
-            case MotionEvent.ACTION_POINTER_UP:
-                //secondTouch = false;
-                /* Generate a right click */
-                long semiDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                /*if( scoll == true ){
-                    float DistanceX = event.getX() - startX;
-                    float DistanceY = event.getY() - startY;
-                    try{
-                        dStream.writeBytes("SCOLL:" + String.valueOf(DistanceX) + " " + String.valueOf(DistanceY) + "\n");
-                        scoll = false;
-                        startX = 0; startY = 0;
-                    }
-                    catch(IOException e){
-                        System.out.println("write to dStream failed.");
-                    }
-                }*/
-                if(scoll) scoll = false;
 
-                if(semiDuration < MAX_CLICK_DURATION){
+            /**
+             *  如果事件是抬起后面落下的指头
+             */
+            case MotionEvent.ACTION_POINTER_UP:
+
+                long semiDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+
+                if(semiDuration < MAX_CLICK_DURATION){                            // 判断是否为右键
                     try {
                         dStream.writeBytes("RIGHT:" + semiDuration + "\n");
                     }
@@ -377,22 +303,14 @@ public class MySurfaceView extends View {
                     }
                 }
                 break;
+
+            /**
+             *  如果事件是抬起最先落下的指头
+             */
             case MotionEvent.ACTION_UP:
-                clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
-                /*if( scoll == true ){
-                    float DistanceX = event.getX() - startX;
-                    float DistanceY = event.getY() - startY;
-                    try{
-                        dStream.writeBytes("SCOLL:" + String.valueOf(DistanceX) + " " + String.valueOf(DistanceY) + "\n");
-                        scoll = false;
-                        startX = 0; startY = 0;
-                    }
-                    catch(IOException e){
-                        System.out.println("write to dStream failed.");
-                    }
-                }*/
-                if(scoll) scoll = false;
-                if(drag){
+                clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;    //计算持续时间
+                if(scoll == true) scoll = false;                                               //  取消滚轮
+                else if(drag == true){                                                         //  处理拖拽
                     drag= false;
                     try {
                         dStream.writeBytes("RELEASE:" + "\n");
@@ -401,18 +319,10 @@ public class MySurfaceView extends View {
                         System.out.println("write to dStream failed.");
                     }
                 }
-                if(clickDuration < MAX_CLICK_DURATION && !secondTouch) {
+                else if(clickDuration < MAX_CLICK_DURATION && !secondTouch) {                 //  否则认为是单击
                     //click event has occurred
                     try {
                         dStream.writeBytes("CLICK:" + clickDuration + "\n");
-                    }
-                    catch(IOException e) {
-                        System.out.println("write to dStream failed.");
-                    }
-                }
-                else if(clickDuration < MAX_CLICK_DURATION && secondTouch) {
-                    try {
-                        dStream.writeBytes("RIGHT:" + clickDuration + "\n");
                     }
                     catch(IOException e) {
                         System.out.println("write to dStream failed.");
@@ -422,6 +332,10 @@ public class MySurfaceView extends View {
                     ;
                 }
 
+                /**
+                 *   将各类参数回复默认值
+                 *   准备下一轮手势
+                  */
             case MotionEvent.ACTION_CANCEL:
                 secondTouch = false;
                 drag = false;
