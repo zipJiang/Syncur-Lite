@@ -35,7 +35,7 @@
                 android:layout_height="0dp"
                 android:id="@+id/testB"
                 android:layout_weight="10"
-                android:onClick="activateSnackBar"/>
+                android:onClick="activateSnackBar (TouchScreenActivity)"/>
     </LinearLayout>
 </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

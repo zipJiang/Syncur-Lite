@@ -7,6 +7,7 @@ package com.example.myadmin.tutorial;
  *  在输入不合法和未能连接的ip地址时报错但是不退出，
  *  而是重新请求输入IP地址，以保证整个程序的稳定性
  */
+import android.app.DialogFragment;
 import android.graphics.Color;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -62,6 +63,8 @@ public class Main extends AppCompatActivity {
         button2.setTypeface(typeface);
         //editText.setBackgroundColor(Color.BLUE);
         editText.setBackgroundColor(Color.GRAY);
+
+
     }
     /* 触屏模式：在点击对应的 button 后被激活，首先检查ip地址的合法性、
        网络连接的正常与否并尝试连接对应的 socket 如果超时连接仍失败
@@ -104,7 +107,6 @@ public class Main extends AppCompatActivity {
         }
         catch(Exception e) {
             String m = e.getMessage();
-            Log.d(TAG, m);
             /* Display Message in a Pop-up window */
             builder.setMessage(m)
                     .setTitle(R.string.error);
@@ -120,7 +122,6 @@ public class Main extends AppCompatActivity {
         if(networkInfo == null) {
             /* these naiive place holder should be changed to log recorder */
             String m = "No wifi connection detected.";
-            Log.d(TAG, m);
             /* Display Message in a Pop-up window */
             builder.setMessage(m)
                     .setTitle(R.string.error);
@@ -309,6 +310,28 @@ public class Main extends AppCompatActivity {
         /* Set text back to the original port */
         if(mnetworkThread != null) {
             editText.setText(mnetworkThread.getIP(), TextView.BufferType.EDITABLE);
+        }
+    }
+
+    /* 这个函数用来调用snackBar，snackBar会弹出一个调节灵敏度的窗口（Dialog） */
+    public void activateSnackBar(View view) {
+        Snackbar mySnackbar = Snackbar.make(findViewById(R.id.myCoordinatorLayout11), R.string.show, 2000);
+        mySnackbar.setAction(R.string.fire, new Main.myClickListener());
+        mySnackbar.show();
+    }
+
+    /* 为了方便这个调节灵敏度Dialog中的参数使用，
+     * 将其定义为内部类
+     */
+    public class myClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDialog();
+        }
+
+        void showDialog() {
+            DialogFragment newFragment = myDialogFrag.newInstance(R.string.sensi);
+            newFragment.show(getFragmentManager(), "dialog");
         }
     }
 

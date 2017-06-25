@@ -48,7 +48,7 @@ public class myDialogFrag extends DialogFragment {
                         TextView myTextView = (TextView)myView.findViewById(R.id.seekBarProg);
                         String progValue = myTextView.getText().toString();
                         Integer intProgValue = Integer.parseInt(progValue);
-                        float localCoeff = (float)(intProgValue.intValue()) * (float)(intProgValue.intValue()) / (float)(1000 * 1000 * 4);
+                        float localCoeff = (float)(intProgValue.intValue()) / (float)(1000 * 4);
                         TouchScreenActivity.coeff = localCoeff;
                     }
                 })
@@ -64,7 +64,8 @@ public class myDialogFrag extends DialogFragment {
         SeekBar mySeekBar = (SeekBar)myView.findViewById(R.id.seekBarSensi);
         TextView subTextView = (TextView)myView.findViewById(R.id.seekBarProg);
         subTextView.setText(String.valueOf(TouchScreenActivity.coeff));
-        mySeekBar.setProgress((int)(TouchScreenActivity.coeff * 1000 * 1000 * 4));
+        mySeekBar.setMax(1 * 1000 * 4);
+        mySeekBar.setProgress((int)(TouchScreenActivity.coeff * 1000 * 4));
         mySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressValue;
             TextView myTextView = (TextView)myView.findViewById(R.id.seekBarProg);
@@ -72,7 +73,7 @@ public class myDialogFrag extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressValue = progress;
-                myTextView.setText(String.valueOf((float)progressValue / (float)(1000 * 1000 * 4)));
+                myTextView.setText(String.valueOf((float)progressValue / (float)(1000 * 4)));
             }
 
             @Override
