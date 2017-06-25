@@ -313,26 +313,4 @@ public class Main extends AppCompatActivity {
         }
     }
 
-    /* 这个函数用来调用snackBar，snackBar会弹出一个调节灵敏度的窗口（Dialog） */
-    public void activateSnackBar(View view) {
-        Snackbar mySnackbar = Snackbar.make(findViewById(R.id.myCoordinatorLayout11), R.string.show, 2000);
-        mySnackbar.setAction(R.string.fire, new Main.myClickListener());
-        mySnackbar.show();
-    }
-
-    /* 为了方便这个调节灵敏度Dialog中的参数使用，
-     * 将其定义为内部类
-     */
-    public class myClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            showDialog();
-        }
-
-        void showDialog() {
-            DialogFragment newFragment = myDialogFrag.newInstance(R.string.sensi);
-            newFragment.show(getFragmentManager(), "dialog");
-        }
-    }
-
 }
